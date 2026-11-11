@@ -7,3 +7,5 @@ target/
 .zed/
 *.log
 .DS_Store
+.direnv/
+.tomcat/
