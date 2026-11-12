@@ -1,23 +1,31 @@
 package com.gestionevenements.dao;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
+import org.hibernate.SessionFactory;
+
 import com.gestionevenements.model.Event;
+import com.gestionevenements.util.HibernateUtil;
 
 public class EventDao {
-
-    private static final List<Event> MOCK_EVENTS = List.of(
-            new Event(1, "AppsClub Conference", LocalDate.of(2026, 11, 20), "Ensa Agadir", 100),
-            new Event(2, "Introduction to Rust", LocalDate.of(2026, 11, 25), "Amphithéâtre", 40),
-            new Event(3, "Nvidia Conference", LocalDate.of(2026, 12, 2), "Salle A1", 60));
+    private final SessionFactory sf = HibernateUtil.get();
 
     public List<Event> findAll() {
-        return MOCK_EVENTS;
+        return sf.fromSession(s ->
+            s.createQuery("from Event e order by e.date", Event.class).list());
     }
 
     public Optional<Event> find(int id) {
-        return MOCK_EVENTS.stream().filter(e -> e.getId() == id).findFirst();
+        return sf.fromSession(s -> Optional.ofNullable(s.find(Event.class, id)));
+    }
+
+    public void save(Event e) {
+        sf.inTransaction(s -> s.persist(e));
+    }
+
+    public long count() {
+        return sf.fromSession(s ->
+            s.createQuery("select count(e) from Event e", Long.class).getSingleResult());
     }
 }
