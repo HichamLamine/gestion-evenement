@@ -1,0 +1,26 @@
+
+body {
+    font-family: Arial, sans-serif;
+    margin: 30px;
+}
+
+nav a {
+    margin-right: 20px;
+}
+
+.events {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.event {
+    border: 1px solid #ccc;
+    padding: 15px;
+    width: 250px;
+}
+
+button {
+    padding: 8px 15px;
+    cursor: pointer;
+}
