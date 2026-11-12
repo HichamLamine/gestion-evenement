@@ -9,8 +9,8 @@
 <body>
 
     <nav>
-        <a href="#">Événements</a>
-        <a href="#">Connexion</a>
+        <a href="evenement.jsp">Événements</a>
+        <a href="connexion.jsp">Connexion</a>
     </nav>
 
     <h1>Liste des événements</h1>
