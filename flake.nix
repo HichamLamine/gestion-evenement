@@ -36,12 +36,14 @@
       mkdir -p "$CATALINA_BASE"/{logs,temp,webapps,work}
       if [ ! -d "$CATALINA_BASE/conf" ]; then
         cp -r --no-preserve=mode "$CATALINA_HOME/conf" "$CATALINA_BASE/conf"
+        sed -i 's|<Engine name="Catalina"|<Engine backgroundProcessorDelay="2" name="Catalina"|' \
+          "$CATALINA_BASE/conf/server.xml"
       fi
 
       # CONTEXT=ROOT serves the app at /, CONTEXT=events serves it at /events
       ctx="''${CONTEXT:-ROOT}"
-      rm -rf "$CATALINA_BASE/webapps/$ctx"
-      cp "$war" "$CATALINA_BASE/webapps/$ctx.war"
+      cp "$war" "$CATALINA_BASE/webapps/$ctx.war.tmp"
+      mv -f "$CATALINA_BASE/webapps/$ctx.war.tmp" "$CATALINA_BASE/webapps/$ctx.war"
       echo "Deployed $war as /$ctx"
     '';
 
@@ -67,6 +69,7 @@
       echo "Watching src/ and pom.xml, Ctrl+C to stop"
       ${pkgs.watchexec}/bin/watchexec \
         --watch src --watch pom.xml --debounce 500ms \
+        --on-busy-update queue \
         -- ${app-deploy}/bin/app-deploy
     '';
   in {
